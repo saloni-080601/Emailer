@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Donation Email</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      color: #29458C;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background-color: #F55C38;
+      color: #ffffff;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 30px;
+    }
+    button:hover {
+      background-color: #e44c2c;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Send Donation Email</h2>
+    <form id="emailForm">
+      <label for="orgName">Organization Name</label>
+      <input type="text" id="orgName" placeholder="Enter Organization Name" required />
+
+      <label for="numLaptops">Total Number of Laptops</label>
+      <input type="text" id="numLaptops" placeholder="Enter Total Number of Laptops" required />
+
+      <label for="email">Email</label>
+      <input type="text" id="email" placeholder="Enter Email" required />
+
+      <button type="button" id="sendEmailButton">Send Email</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('sendEmailButton').addEventListener('click', function () {
+      // Fetch values from text fields
+      const orgName = document.getElementById('orgName').value.trim();
+      const numLaptops = document.getElementById('numLaptops').value.trim();
+      const email = document.getElementById('email').value.trim();
+
+      // Validation
+      if (!orgName || !numLaptops || !email) {
+        alert('Please fill in all fields before sending the email.');
+        return;
+      }
+
+      // Confirmation dialog
+      const confirmSend = confirm(`Are you sure you want to send an email to:\n\nOrganization Name: ${orgName}\nTotal Laptops: ${numLaptops}`);
+      if (!confirmSend) return;
+      const requestData = {
+        orgName: orgName,
+        numLaptops: numLaptops,
+        email: email
+      };
+
+      // Send the data to the Google Apps Script endpoint
+      fetch('https://script.google.com/macros/s/AKfycbzrJ9SrAVZjHVeRCvD1GvNVUzZMbYAxf2FpZ1KkTDWJUtMmecdemhS4xutjIdVhxrdc7w/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
+        body: JSON.stringify(requestData)
+      })
+        .then(data => {
+          if (data.success) {
+            alert('Email sent successfully!');
+          } else {
+            alert('Failed to send email. Please try again later.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again.');
+        });
+    });
+  </script>
+
+</body>
+</html>
